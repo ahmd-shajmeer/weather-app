@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css"
+    />
+    <style>
+      body {
+        width: 100%;
+        height: 100vh;
+        background-image: url(./assets/images/pexels-stein-egil-liland-6007906.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <div class="container">
+        <h1 class="text-center pt-2">Weather</h1>
+        <div class="search">
+          <form class="d-flex p-5 justify-content-center">
+            <input
+              class="form-control text-light me-2 w-50 bg-transparent border-5 fs-3"
+              id="city"
+              type="text"
+              placeholder="Enter a city "
+            />
+            <button class="btn btn-outline-primary text-light ps-3 pe-3">
+              Search
+            </button>
+          </form>
+        </div>
+        <div id="result" class="mt-5"></div>
+      </div>
+    </div>
+  </body>
+  <script>
+    const apiKey = "05ca35fdb72e1a2718e035313bcf743f";
+    const apiURL = "https://api.openweathermap.org/data/2.5/weather?";
+
+    const searchBox = document.getElementById("city");
+    const searchButton = document.querySelector(".search button");
+    const result = document.getElementById("result");
+
+    const weatherFinder = async (city) => {
+      const response = await fetch(
+        `${apiURL}&q=${city}&appid=${apiKey}&units=metric`
+      );
+      const weatherData = await response.json();
+
+      const cityName = weatherData.name;
+      const currentTemp = weatherData.main.temp;
+      const feelLike = weatherData.main.feels_like;
+      const country = weatherData.sys.country;
+      const humidity = weatherData.main.humidity;
+      const windSpeed = weatherData.wind.speed;
+      const pressure = weatherData.main.pressure;
+
+      result.innerHTML = `
+        <div class="row">
+                <div class="col-6 text-center">
+                     <h1 class="text-uppercase">${cityName}</h1>
+                     <h1 style="font-size: 60px;">${currentTemp}&deg;C</h1>
+                     <h4>Feels Like : ${feelLike}&deg;C </h4>
+                </div>
+                <div class="col-6">
+                   <ul class="list-group list-group-flush fs-4 fw-bold">
+                       <li class="list-group-item text-light bg-info bg-opacity-10 border-bottom border-info">Country : ${country}</li>
+                       <li class="list-group-item text-light bg-info bg-opacity-10 border-bottom border-info">Humidity : ${humidity}% </li>
+                       <li class="list-group-item text-light bg-info bg-opacity-10 border-bottom border-info">Wind Speed : ${windSpeed}m/s </li>
+                       <li class="list-group-item text-light bg-info bg-opacity-10 border-bottom border-info">Pressure : ${pressure} </li>
+                     </ul>
+                </div>
+            </div>
+        `;
+      console.log(
+        cityName,
+        currentTemp,
+        feelLike,
+        country,
+        humidity,
+        windSpeed,
+        pressure
+      );
+    };
+    searchButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      weatherFinder(searchBox.value);
+    });
+  </script>
+</html>
